@@ -15,6 +15,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var oauth2Router = require('./routes/oauth2');
+var openidRouter = require('./routes/openid');
 
 // initialize express
 var app = express();
@@ -46,6 +48,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/oauth2', oauth2Router);
+app.use('/openid', openidRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

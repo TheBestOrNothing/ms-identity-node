@@ -5,7 +5,7 @@
 
 var express = require('express');
 
-const authProvider = require('../auth/AuthProvider');
+const authProvider = require('../oauth2/AuthProvider');
 const { REDIRECT_URI, POST_LOGOUT_REDIRECT_URI } = require('../authConfig');
 
 const router = express.Router();
@@ -28,15 +28,11 @@ router.get('/signout', authProvider.logout({
     postLogoutRedirectUri: POST_LOGOUT_REDIRECT_URI
 }));
 
-router.get('/authorize1', authProvider.getCode({
-    postLogoutRedirectUri: POST_LOGOUT_REDIRECT_URI
-}));
-
 router.get('/authorize', authProvider.getCode({
     postLogoutRedirectUri: POST_LOGOUT_REDIRECT_URI
 }));
 
-router.post('/meta', authProvider.meta({
+router.post('/token', authProvider.token({
     postLogoutRedirectUri: POST_LOGOUT_REDIRECT_URI
 }));
 

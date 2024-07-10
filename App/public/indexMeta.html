@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<h1 class="page-title gl-font-size-h-display">Redirecting</h1>
+<div>
+<a href="http://localhost:3000/_oauth/meta?code=b7e91d599e6d2b543ee951fa869052c0fa61a24995fdece12071427d8ee25fb7&amp;state=eyJsb2dpblN0eWxlIjoicG9wdXAiLCJjcmVkZW50aWFsVG9rZW4iOiJwWXdaT0ZvbmpWVVNWUEFVaUwwNzJyR0hZX1l4VlhZaWNXVlNhazFSYVpxIiwiaXNDb3Jkb3ZhIjpmYWxzZX0%3D">Click here to redirect to http://localhost:3000/_oauth/gitlab?code=b7e91d599e6d2b543ee951fa869052c0fa61a24995fdece12071427d8ee25fb7&amp;state=eyJsb2dpblN0eWxlIjoicG9wdXAiLCJjcmVkZW50aWFsVG9rZW4iOiJwWXdaT0ZvbmpWVVNWUEFVaUwwNzJyR0hZX1l4VlhZaWNXVlNhazFSYVpxIiwiaXNDb3Jkb3ZhIjpmYWxzZX0%3D</a>
+</div>
+<script nonce="ECMlHjsqIk1Ch8+vXRAKTQ==">
+//<![CDATA[
+(function() {
+  // Only permit a basic set of characters in the fragment.
+  const allowedRegex = /^#[\w-]+$/g;
+
+  const hash = window.location.hash;
+  let redirectUri = "http://localhost:3000/_oauth/meta?code=b7e91d599e6d2b543ee951fa869052c0fa61a24995fdece12071427d8ee25fb7&state=eyJsb2dpblN0eWxlIjoicG9wdXAiLCJjcmVkZW50aWFsVG9rZW4iOiJwWXdaT0ZvbmpWVVNWUEFVaUwwNzJyR0hZX1l4VlhZaWNXVlNhazFSYVpxIiwiaXNDb3Jkb3ZhIjpmYWxzZX0%3D";
+
+  if (window.location.hash && window.location.hash.search(allowedRegex) === 0 && redirectUri.indexOf('#') === -1) {
+    redirectUri = redirectUri + hash;
+  }
+
+  window.location = redirectUri;
+})();
+
+
+//]]>
+</script>
+</html>

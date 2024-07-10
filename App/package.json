@@ -8,6 +8,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
+    "@azure/msal-browser": "^2.37.0",
     "@azure/msal-node": "^2.6.2",
     "axios": "^1.6.7",
     "cookie-parser": "^1.4.6",

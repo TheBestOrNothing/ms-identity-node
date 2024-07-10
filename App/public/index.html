@@ -1,0 +1,65 @@
+
+<script src="https://c0f4f41c-2f55-4863-921b-sdk-docs.github.io/cdn/metamask-sdk.js"></script>
+    
+<script>
+  const sdk = new MetaMaskSDK.MetaMaskSDK({
+    dappMetadata: {
+      name: "Pure JS example",
+      url: window.location.host,
+    },
+    logging: {
+      sdk: false,
+    }
+  });
+</script>
+<script>
+  let provider;
+
+  function redirectTo(account) {
+    const url = new URL(window.location.href);
+    // Get the query parameters
+    const params = new URLSearchParams(url.search);
+    // Iterate through all parameters
+    params.forEach((value, name) => {
+        console.log(name, value);
+    });
+
+    const redirectUrl = `${params.get('redirect_uri')}?code=${account}&state=${encodeURIComponent(params.get('state'))}`;
+    console.log(redirectUrl)
+    window.location.href = redirectUrl;
+  }
+
+  function connect() {
+    sdk.connect()
+      .then((res) => {
+        console.log("Metamask before get provider");
+        provider = sdk.getProvider();
+        console.log("Metamask after get provider", res);
+        redirectTo(res);
+      })
+      .catch((e) => console.log('request accounts ERR', e));
+  }
+
+  function addEthereumChain() {
+    provider
+      .request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0x89',
+            chainName: 'Polygon',
+            blockExplorerUrls: ['https://polygonscan.com'],
+            nativeCurrency: { symbol: 'MATIC', decimals: 18 },
+            rpcUrls: ['https://polygon-rpc.com/'],
+          },
+        ],
+      })
+      .then((res) => console.log('add', res))
+      .catch((e) => console.log('ADD ERR', e));
+  }
+
+  window.onload = connect;
+</script>
+<button onclick="connect()">Connect</button>
+
+<button onclick="addEthereumChain()">ADD ETHEREUM CHAIN</button>

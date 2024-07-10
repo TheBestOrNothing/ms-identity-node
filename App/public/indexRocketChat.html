@@ -1,0 +1,127 @@
+<!-- 
+    Blank page for redirect purposes. When using popup and silent APIs,
+    we recommend setting the redirectUri to a blank page or a page that does not implement MSAL.
+    For more information, please follow this link: 
+    https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/login-user.md#redirecturi-considerations 
+-->
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OAuth v1 Authentication Example</title>
+    <script src="https://c0f4f41c-2f55-4863-921b-sdk-docs.github.io/cdn/metamask-sdk.js"></script>
+    <script>
+        const sdk = new MetaMaskSDK.MetaMaskSDK({
+          dappMetadata: {
+            name: "Pure JS example",
+            url: window.location.host,
+          },
+          logging: {
+            sdk: false,
+          }
+        });
+    </script>
+    <script>
+        // Configuration for your OAuth v1 app
+        const config = {
+            clientId: 'e3845613-0331-49c0-9f11-fb6a634242d2', // Replace with your client ID
+            redirectUri: 'https://212c-34-92-204-228.ngrok-free.app/_oauth/microsoft356', // Replace with your redirect URI
+            authEndpoint: 'https://login.microsoftonline.com/d5e685a9-3e23-42d9-9efa-15cc5c1ce7db/oauth2/authorize',
+            tokenEndpoint: 'https://login.microsoftonline.com/d5e685a9-3e23-42d9-9efa-15cc5c1ce7db/oauth2/token',
+            scopes: 'openid profile email', // Replace with the scopes you need
+            state: "eyJsb2dpblN0eWxlIjoicmVkaXJlY3QiLCJjcmVkZW50aWFsVG9rZW4iOiJPdk9IemNELThhMXBwTndKUFJuU0FnY1QyTUxOZmdRLWZjaXVPYjdZQ0FPIiwiaXNDb3Jkb3ZhIjpmYWxzZSwicmVkaXJlY3RVcmwiOiJodHRwczovLzIxMmMtMzQtOTItMjA0LTIyOC5uZ3Jvay1mcmVlLmFwcC9ob21lIn0=",
+            code: "abcdefg",
+            session_state: "2e1ade24-bffe-46ef-b1c7-934dc8dfbd00#",
+
+        };
+
+        let provider;
+
+function connect() {
+  sdk.connect()
+    .then((res) => {
+      provider = sdk.getProvider();
+    })
+    .catch((e) => console.log('request accounts ERR', e));
+}
+
+        function signIn() {
+
+            const url = new URL(window.location.href);
+
+            // Get the query parameters
+            const params = new URLSearchParams(url.search);
+
+            // Iterate through all parameters
+            params.forEach((value, name) => {
+                console.log(name, value);
+            });
+
+            let account;
+            sdk.connect()
+                .then((res) => {
+                  // provider = sdk.getProvider();
+                  account = res;
+                })
+                .catch((e) => console.log('request accounts ERR', e));
+
+            const authUrl = `${config.authEndpoint}?response_type=code&client_id=${config.clientId}&redirect_uri=${encodeURIComponent(params.get('redirect_uri'))}&scope=${encodeURIComponent(params.get('scope'))}&state=${encodeURIComponent(params.get('state'))}`;
+            //window.location.href = authUrl;
+            const redirect1= `${params.get('redirect_uri')}?code=${config.code}&state=${encodeURIComponent(params.get('state'))}&session_state=${encodeURIComponent(config.session_state)}`;
+            const redirect2= `${params.get('redirect_uri')}?code=${account}&state=${encodeURIComponent(params.get('state'))}&session_state=${encodeURIComponent(config.session_state)}`;
+            console.log(redirect1)
+            window.location.href = redirect1;
+
+        }
+
+        function getQueryParams() {
+            const params = {};
+            window.location.search.substring(1).split("&").forEach(param => {
+                const [key, value] = param.split("=");
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        async function handleRedirect() {
+            const queryParams = getQueryParams();
+
+            if (queryParams.code) {
+                const code = queryParams.code;
+                //await exchangeCodeForTokens(code);
+            }
+        }
+
+        async function exchangeCodeForTokens(code) {
+            const response = await fetch(config.tokenEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: code,
+                    redirect_uri: config.redirectUri,
+                    client_id: config.clientId,
+                    client_secret: 'YOUR_CLIENT_SECRET' // Only needed for confidential clients
+                })
+            });
+
+            if (response.ok) {
+                const tokenResponse = await response.json();
+                console.log('Token Response:', tokenResponse);
+                // Handle tokens (e.g., store them, use them to make authenticated requests)
+            } else {
+                console.error('Token request failed:', response.status, response.statusText);
+            }
+        }
+
+        window.onload = handleRedirect;
+    </script>
+</head>
+<body>
+    <button onclick="signIn()">Sign In</button>
+</body>
+</html>
